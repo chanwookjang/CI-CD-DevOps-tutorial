@@ -1,6 +1,0 @@
-django
-django-multitenant
-psycopg2
-gunicorn
-djangorestframework
-djangorestframework-simplejwt
