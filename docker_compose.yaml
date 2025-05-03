@@ -1,7 +1,7 @@
 version: "3.9"
 services:
   web:
-    image: 267269535421.dkr.ecr.us-east-1.amazonaws.com/django-app:latest
+    image: django-app:latest
     container_name: django-web-dev
     env_file: .env
     restart: always
