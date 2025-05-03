@@ -14,10 +14,6 @@ jobs:
         # run: |
         #   echo "Checkout code"
 
-      # 2. Docker Compose 설치
-      - name: Install Docker Compose
-        uses: docker/setup-compose-action@v1
-
       # 2. AWS 자격 증명 설정
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
@@ -40,10 +36,13 @@ jobs:
 
       # 4. 도커 이미지 빌드 및 푸시
       - name: Build and push Docker image
-        run: | #도커 컴포즈 파일을 사용하여 이미지 빌드 및 푸시
-          docker-compose -f docker_compose.yaml build --no-cache   
-          docker push 267269535421.dkr.ecr.us-east-1.amazonaws.com/django-app:latest
+        run: |
+          docker compose -f docker_compose.yaml build --no-cache  # 도커 이미지 빌드
+          docker tag django-app:latest $ECR_REGISTRY/django-app:latest  # ECR 레지스트리로 태그 변경
+          docker push $ECR_REGISTRY/django-app:latest  # ECR에 푸시
           echo "Build and push Docker image to ECR"
+
+          
 
           
       # 5. 테라폼 인프라 배포
