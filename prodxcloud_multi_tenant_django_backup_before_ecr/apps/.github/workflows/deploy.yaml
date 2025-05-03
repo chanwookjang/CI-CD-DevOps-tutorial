@@ -8,6 +8,8 @@ jobs:
       # 1. 코드 체크아웃
       - name: Checkout code
         uses: actions/checkout@v4  # 저장소 코드를 워크플로우에 복제
+        run: |
+          echo "Checkout code"
 
       # 2. AWS 자격 증명 설정
       - name: Configure AWS credentials
