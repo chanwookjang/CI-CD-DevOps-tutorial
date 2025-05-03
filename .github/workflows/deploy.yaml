@@ -16,10 +16,8 @@ jobs:
 
       # 2. Docker Compose 설치
       - name: Install Docker Compose
-        uses: docker/setup-compose-action@v2
-        with:
-          version: 2.20.2  # Docker Compose 버전
-          
+        uses: docker/setup-compose-action@v1
+
       # 2. AWS 자격 증명 설정
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
