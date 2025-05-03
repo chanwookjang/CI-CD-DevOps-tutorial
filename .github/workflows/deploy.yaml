@@ -1,5 +1,8 @@
 name: Deploy to EKS  # 워크플로우 이름
-on: [push]  # main 브랜치에 push 이벤트 발생 시 트리거
+on: 
+  push:
+    branches: [ main ] 
+     # main 브랜치에 push 이벤트 발생 시 트리거
 
 jobs:
   deploy:
