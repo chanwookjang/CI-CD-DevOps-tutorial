@@ -16,6 +16,9 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}  # GitHub Secrets에 저장된 값
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1  #  리전
+        run: |
+          echo "Configuring AWS credentials"
+  
 
       # 3. ECR 로그인
       - name: Login to ECR
@@ -23,16 +26,23 @@ jobs:
           aws ecr get-login-password | docker login --username AWS --password-stdin $ECR_REGISTRY
         env:
           ECR_REGISTRY: 267269535421.dkr.ecr.us-east-1.amazonaws.com  # 본인 계정 ID로 변경 필요
+        run: |
+          echo "Login to ECR"
 
       # 4. 도커 이미지 빌드 및 푸시
       - name: Build and push Docker image
         run: | #도커 컴포즈 파일을 사용하여 이미지 빌드 및 푸시
           docker-compose -f docker_compose.yaml build --no-cache   
           docker push 267269535421.dkr.ecr.us-east-1.amazonaws.com/django-app:latest
+        run: |
+          echo "Build and push Docker image to ECR"
 
+          
       # 5. 테라폼 인프라 배포
       - name: Terraform Apply
         run: |
           cd terraform  # terraform 디렉토리 이동
           terraform init  # 테라폼 초기화
           terraform apply -auto-approve  # 자동 승인 모드로 인프라 배포
+          echo "Terraform apply completed"
+        
