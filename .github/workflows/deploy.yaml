@@ -34,6 +34,7 @@ jobs:
       # 4. 도커 이미지 빌드 및 푸시
       - name: Build and push Docker image
         run: | #도커 컴포즈 파일을 사용하여 이미지 빌드 및 푸시
+          cd prodxcloud_multi_tenant_django_backup_before_ecr
           docker-compose -f docker_compose.yaml build --no-cache   
           docker push 267269535421.dkr.ecr.us-east-1.amazonaws.com/django-app:latest
         run: |
@@ -43,6 +44,7 @@ jobs:
       # 5. 테라폼 인프라 배포
       - name: Terraform Apply
         run: |
+          cd prodxcloud_multi_tenant_django_backup_before_ecr
           cd terraform  # terraform 디렉토리 이동
           terraform init  # 테라폼 초기화
           terraform apply -auto-approve  # 자동 승인 모드로 인프라 배포
