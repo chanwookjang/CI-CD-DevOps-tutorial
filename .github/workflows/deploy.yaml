@@ -44,8 +44,8 @@ jobs:
       - name: Build and push Docker image
         run: | ## ECR에 푸시할 도커 이미지 빌드 및 푸시
           docker compose -f docker_compose.yaml build --no-cache  
-          docker tag django-app:latest $ECR_REGISTRY/andy1692/app/django-app:latest
-          docker push $ECR_REGISTRY/andy1692/app/django-app:latest
+          docker tag django-app:latest $ECR_REGISTRY/andy1692/app:latest
+          docker push $ECR_REGISTRY/andy1692/app:latest
           echo "Build and push Docker image to ECR"
         env:
           ECR_REGISTRY: 267269535421.dkr.ecr.us-east-1.amazonaws.com
