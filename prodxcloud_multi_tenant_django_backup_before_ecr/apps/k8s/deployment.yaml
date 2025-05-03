@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: django-web
-        image: <ECR-이미지-URL>:latest  # 실제 ECR 이미지 주소로 교체
+        image: 267269535421.dkr.ecr.us-east-1.amazonaws.com/django-app  # 실제 ECR 이미지 주소로 교체
         envFrom:
         - secretRef:
             name: django-env  # 필요시, 환경변수 Secret로 관리

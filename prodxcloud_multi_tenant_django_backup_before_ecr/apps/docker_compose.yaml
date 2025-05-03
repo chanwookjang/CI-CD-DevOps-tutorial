@@ -1,8 +1,8 @@
 version: "3.9"
 services:
   web:
-    image: joelwembo/prodxcloud-django-web-dev:latest
-    container_name: prodxcloud-django-web-dev
+    image: 267269535421.dkr.ecr.us-east-1.amazonaws.com/django-app:latest
+    container_name: django-web-dev
     env_file: .env
     restart: always
     build:
@@ -67,7 +67,7 @@ services:
 
   pgadmin:
     image: dpage/pgadmin4
-    container_name: prodxcloud-pgadmin
+    container_name: pgadmin
     restart: always
     depends_on:
       - db
