@@ -31,7 +31,7 @@ jobs:
           aws ecr get-login-password | docker login --username AWS --password-stdin $ECR_REGISTRY
           echo "Login to ECR"
         env:
-          ECR_REGISTRY: 267269535421.dkr.ecr.us-east-1.amazonaws.com  # 본인 계정 ID로 변경 필요
+          ECR_REGISTRY: 267269535421.dkr.ecr.us-east-1.amazonaws.com/andy1692/app  # 본인 계정 ID로 변경 필요
 
 
       # 4. 도커 이미지 빌드 및 푸시
