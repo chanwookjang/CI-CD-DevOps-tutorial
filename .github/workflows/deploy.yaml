@@ -36,15 +36,12 @@ jobs:
 
       # 4. 도커 이미지 빌드 및 푸시
       - name: Build and push Docker image
-        run: |
-          docker compose -f docker_compose.yaml build --no-cache  # 도커 이미지 빌드
-          docker tag django-app:latest $ECR_REGISTRY/django-app:latest  # ECR 레지스트리로 태그 변경
-          docker push $ECR_REGISTRY/django-app:latest  # ECR에 푸시
+        run: | ## ECR에 푸시할 도커 이미지 빌드 및 푸시
+          docker compose -f docker_compose.yaml build --no-cache  
+          docker tag django-app:latest $ECR_REGISTRY/django-app:latest
+          docker push $ECR_REGISTRY/django-app:latest  
           echo "Build and push Docker image to ECR"
 
-          
-
-          
       # 5. 테라폼 인프라 배포
       - name: Terraform Apply
         run: |
