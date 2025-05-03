@@ -99,7 +99,7 @@ resource "aws_eks_node_group" "nodes" {
     min_size     = 1
   }
 
-  instance_types = ["t3.small"]
+  instance_types = ["t2.micro"]
     #런치템플릿으로 인터넷에서 접속 가능한 퍼블릭 ip 자동할당
     launch_template {
     id      = aws_launch_template.eks_nodes.id
@@ -110,7 +110,7 @@ resource "aws_eks_node_group" "nodes" {
 resource "aws_launch_template" "eks_nodes" {
   name_prefix   = "eks-node-"
   image_id      = data.aws_ami.eks_worker.id
-  instance_type = "t3.small"
+  instance_type = "t2.micro"
 
   network_interfaces {
     associate_public_ip_address = true ## 얘 퍼블릭 ip 자동할당 핵심
