@@ -7,6 +7,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest  # GitHub 호스팅 Ubuntu 실행 환경
+    if: false ###############배포 할거면 이거 true로 바꿔야함!!!!!!!!!!!!!!!!!!!###############
     steps:
       # 1. 코드 체크아웃
       - name: Checkout code

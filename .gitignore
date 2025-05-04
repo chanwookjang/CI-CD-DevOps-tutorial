@@ -3,7 +3,6 @@
 # delete this file if you want  real one!!
 terraform/
 
-.github/
 # Local .terraform directories
 **/.terraform/*
 .terraform/res
