@@ -3,7 +3,7 @@
 # delete this file if you want  real one!!
 terraform/
 
-.github/workflows/deploy.yaml
+.github/
 # Local .terraform directories
 **/.terraform/*
 .terraform/res
