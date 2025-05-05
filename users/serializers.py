@@ -25,7 +25,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         fields = ['email', 'password', 'first_name', 'last_name'] # scync
         
     def create(self, validated_data):
-        user = MyUser.objects.create_user( # ⭐ DB INSERT 쿼리 실행 / 이메일 중복체크도 실행행
+        user = MyUser.objects.create_user( # ⭐ DB INSERT 쿼리 실행 / 이메일 중복체크도 실행
             email=validated_data['email'], # scync
             password=validated_data['password'], #
             first_name=validated_data['first_name'],  #
