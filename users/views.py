@@ -12,7 +12,7 @@ from rest_framework.permissions import AllowAny
 from django.http import HttpResponse
 
 class MyTokenObtainPairView(TokenObtainPairView):
-    serializer_class = MyTokenObtainPairSerializer
+    serializer_class = MyTokenObtainPairSerializer # 로그인 시 DB 조회 / 이메일로 사용자 조회(SELECT ... WHERE email=...)를 수행합니다.
 
 class RegisterView(generics.CreateAPIView):
     queryset = MyUser.objects.all()
