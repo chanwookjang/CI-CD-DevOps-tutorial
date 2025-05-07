@@ -1,7 +1,7 @@
 version: "3.9"
 services:
   web:
-    image: django-app:latest
+    image: andy1692/django_project:latest
     container_name: django-web-dev
     env_file: .env
     restart: always
@@ -22,7 +22,6 @@ services:
         gunicorn --bind 0.0.0.0:8585 prodxcloud_multi_tenant_django.wsgi:application --workers 4 --threads 4
     ports:
       - "8585:8585"
-      - "8000:8000"
     networks:
       - web_network
       - data_network ### 이렇게 함으로써 db와의 네트워크 연결
