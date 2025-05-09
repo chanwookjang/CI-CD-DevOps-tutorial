@@ -1,0 +1,15 @@
+aws_region         = "ap-northeast-2"
+access_key         = ""
+secret_key         = ""
+company_name     = "prodxcloud"
+cidr_block           = "10.0.0.0/16"
+custom_domain_4      = "dev.prodxcloud.io"
+api_domain_name      = "api.prodxcloud.io"
+backend_organization = "prodxcloud"
+tenant_state_bucket  = "prodxcloud-tenant-state-bucket"
+# Multi-tenant EC2 Unique definitions for each tenant
+# Multi-tenant EKS Cluster Unique definitions for each tenant
+cluster_name            = "prodxcloud-tenant-cluster-prod"
+eks-cluster-autoscaler  = "eks-cluster-autoscaler"
+cluster_version =   "1.32"
+tenant_vpc = "prodxcloud_tenant_vpc_eks"
