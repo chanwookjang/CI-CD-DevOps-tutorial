@@ -46,7 +46,7 @@ resource "aws_route_table" "private" {
 
 # 프라이빗 서브넷과 라우팅 테이블 연결
 resource "aws_route_table_association" "private" {
-  subnet_id      = aws_subnet.private-ap-northeast-2a.id ##프라이빗 서브넷a 지정!!
+  subnet_id      = [aws_subnet.private-ap-northeast-2a.id, aws_subnet.private-ap-northeast-2b.id ]##프라이빗 서브넷a 지정!!
   route_table_id = aws_route_table.private.id
 } 
 
