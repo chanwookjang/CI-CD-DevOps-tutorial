@@ -169,3 +169,19 @@ resource "aws_iam_role_policy_attachment" "eks_worker_node_AmazonEC2ContainerReg
   role       = aws_iam_role.eks_node_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
 }
+
+## EKS 노드용 AMI 데이터 소스
+data "aws_ami" "eks_worker" {
+  most_recent = true
+  owners      = ["602401143452"] # EKS 공식 AMI 소유자
+
+  filter {
+    name   = "name"
+    values = ["amazon-eks-node-1.32-v*"] # EKS 1.32 버전용 AMI
+  }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+}

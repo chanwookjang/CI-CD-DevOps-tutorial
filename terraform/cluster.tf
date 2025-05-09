@@ -37,17 +37,17 @@ resource "aws_eks_node_group" "node_group" {
     id      = aws_launch_template.eks_nodes.id
     version = "$Latest"
   }
-  
+
   scaling_config {
     desired_size = 1   # 프리 티어 무료 한도에 맞게 1대로 설정
     max_size     = 1
     min_size     = 1
   }
 
-  instance_types = ["t3.micro"]   # 프리 티어 지원 인스턴스 타입
-  ami_type       = "AL2_x86_64"
-  disk_size      = 8              # 프리 티어 EBS 30GB 내에서 8GB만 사용
-
+     # 프리 티어 지원 인스턴스 타입
+  ami_type = "CUSTOM"
+  instance_types = ["t3.micro"]
+  
   tags = {
     Name = "eks-node-group"
   }
@@ -61,4 +61,14 @@ resource "aws_launch_template" "eks_nodes" {
   vpc_security_group_ids = [
     aws_security_group.eks_nodes_sg.id
   ]
+
+  block_device_mappings {
+    device_name = "/dev/xvda"
+    ebs {
+      volume_size = 8          # 원하는 디스크 크기(GB)
+      volume_type = "gp3"      # 또는 "gp2"
+      delete_on_termination = true
+    }
+  }
+  
 }
