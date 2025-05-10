@@ -7,7 +7,7 @@ resource "aws_eks_cluster" "prodxcloud-cluster-prod" {
   name     = "prodxcloud-cluster-prod"
   version  = "1.32"
 
-  role_arn = aws_iam_role.eks.arn  # IAM 역할은 별도로 정의해야 합니다.
+  role_arn = aws_iam_role.eks.arn  # IAM 역할
 
   vpc_config {
     subnet_ids = [
@@ -34,10 +34,11 @@ resource "aws_eks_node_group" "node_group" {
   node_group_name = "eks-node-group"
   node_role_arn   = aws_iam_role.eks_node_role.arn
   subnet_ids      = [aws_subnet.private-ap-northeast-2a.id, aws_subnet.private-ap-northeast-2b.id]
+  ami_type = "AL2_x86_64" # Amazon Linux 2
 
   launch_template {
     id      = aws_launch_template.eks_nodes.id
-    version = "$Latest"
+    version = aws_launch_template.eks_nodes.latest_version
   }
 
   scaling_config {
@@ -46,10 +47,6 @@ resource "aws_eks_node_group" "node_group" {
     min_size     = 1
   }
 
-     # 프리 티어 지원 인스턴스 타입
-  ami_type = "CUSTOM"
-  #instance_types = ["t3.micro"]
-  
   tags = {
     Name = "eks-node-group"
   }
@@ -57,12 +54,13 @@ resource "aws_eks_node_group" "node_group" {
 
 resource "aws_launch_template" "eks_nodes" {
   name_prefix   = "eks-node-"
-  image_id      = data.aws_ami.eks_worker.id # EKS 공식 AMI 또는 원하는 AMI
   instance_type = "t3.micro"
 
   vpc_security_group_ids = [
     aws_security_group.eks_nodes_sg.id
   ]
+  #아래서 생성한 유저데이터 사용
+  user_data = base64encode(data.cloudinit_config.eks_node_user_data.rendered)
 
   block_device_mappings {
     device_name = "/dev/xvda"
@@ -73,4 +71,18 @@ resource "aws_launch_template" "eks_nodes" {
     }
   }
   
+}
+
+# MIME 멀티파트 형식으로 UserData 생성
+data "cloudinit_config" "eks_node_user_data" {
+  gzip          = false # gzip 비활성화 (기본값 true)
+  base64_encode = false # base64 인코딩 비활성화
+
+  part {
+    content_type = "text/x-shellscript"
+    content      = <<-EOF
+      #!/bin/bash
+      /etc/eks/bootstrap.sh ${aws_eks_cluster.prodxcloud-cluster-prod.name}
+    EOF
+  }
 }
