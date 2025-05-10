@@ -27,6 +27,8 @@ resource "aws_eks_cluster" "prodxcloud-cluster-prod" {
   }
 }
 
+# 노드그룹 생성
+# 강제 종료 시 aws eks delete-nodegroup --cluster-name prodxcloud-cluster-prod --nodegroup-name eks-node-group --region ap-northeast-2 --no-paginate
 resource "aws_eks_node_group" "node_group" {
   cluster_name    = aws_eks_cluster.prodxcloud-cluster-prod.name
   node_group_name = "eks-node-group"
@@ -46,7 +48,7 @@ resource "aws_eks_node_group" "node_group" {
 
      # 프리 티어 지원 인스턴스 타입
   ami_type = "CUSTOM"
-  instance_types = ["t3.micro"]
+  #instance_types = ["t3.micro"]
   
   tags = {
     Name = "eks-node-group"
