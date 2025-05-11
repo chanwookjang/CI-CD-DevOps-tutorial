@@ -4,7 +4,7 @@ set -ex
 #YOU MUST NOT CONTAIN ANY KOREAN TEXT IN THIS FILE IT MAKES UNICODE ENCODING ERRORS!!!
 
 # Password setup (Change MySecurePassword123! as needed)
-# echo 'ec2-user:1692' | chpasswd
+# echo 'ec2-user:...' | chpasswd
 
 # # Enable SSH password authentication
 # sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
