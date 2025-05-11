@@ -9,6 +9,7 @@ resource "aws_vpc" "tenant_vpc" {
   tags = {
     Name = var.tenant_vpc
     Owner = "prodxcloud"
+    Name = "prodxcloud-tenant-eks-vpc"
   }
 
   lifecycle {

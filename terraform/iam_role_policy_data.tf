@@ -21,14 +21,14 @@ resource "aws_iam_role_policy_attachment" "eks_cluster_policy" {
 
 # 3. OIDC 공급자 설정 (IRSA용)
 data "tls_certificate" "eks" {
-  url = aws_eks_cluster.prodxcloud-cluster-prod.identity[0].oidc[0].issuer
+  url = "${aws_eks_cluster.prodxcloud-cluster-prod.identity[0].oidc[0].issuer}"
   depends_on = [aws_eks_cluster.prodxcloud-cluster-prod]
 }
 
 resource "aws_iam_openid_connect_provider" "eks" {
   client_id_list  = ["sts.amazonaws.com"]
   thumbprint_list = [data.tls_certificate.eks.certificates[0].sha1_fingerprint]
-  url             = aws_eks_cluster.prodxcloud-cluster-prod.identity[0].oidc[0].issuer
+  url             = "${aws_eks_cluster.prodxcloud-cluster-prod.identity[0].oidc[0].issuer}"
   depends_on      = [aws_eks_cluster.prodxcloud-cluster-prod]
 }
 
@@ -176,4 +176,24 @@ data "aws_ami" "eks_worker" {
     name   = "virtualization-type"
     values = ["hvm"]
   }
+}
+
+# aws-auth-configmap.tf 생성
+resource "kubernetes_config_map" "aws_auth" {
+  metadata {
+    name      = "aws-auth"
+    namespace = "kube-system"
+  }
+
+  data = {
+    mapRoles = yamlencode([
+      {
+        rolearn  = "${aws_iam_role.eks_node_role.arn}"
+        username = "system:node:{{EC2PrivateDNSName}}"
+        groups   = ["system:bootstrappers", "system:nodes"]
+      }
+    ])
+  }
+
+  depends_on = [aws_eks_cluster.prodxcloud-cluster-prod]
 }

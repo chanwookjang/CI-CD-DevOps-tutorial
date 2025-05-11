@@ -1,6 +1,4 @@
-provider "aws" {
-  region = "ap-northeast-2"
-}
+
 
 # EKS 클러스터 생성
 resource "aws_eks_cluster" "prodxcloud-cluster-prod" {
@@ -25,6 +23,7 @@ resource "aws_eks_cluster" "prodxcloud-cluster-prod" {
     Environment = "prod"
     Name        = "prodxcloud-cluster-prod"
   }
+  depends_on = [aws_iam_role.eks]
 }
 
 # 노드그룹 생성
@@ -73,16 +72,16 @@ resource "aws_launch_template" "eks_nodes" {
   
 }
 
-# MIME 멀티파트 형식으로 UserData 생성
 data "cloudinit_config" "eks_node_user_data" {
-  gzip          = false # gzip 비활성화 (기본값 true)
-  base64_encode = false # base64 인코딩 비활성화
+  gzip          = false
+  base64_encode = false
 
   part {
     content_type = "text/x-shellscript"
-    content      = <<-EOF
-      #!/bin/bash
-      /etc/eks/bootstrap.sh ${aws_eks_cluster.prodxcloud-cluster-prod.name}
-    EOF
+    content = templatefile("${path.module}/eks_bootstrap.sh", {
+      cluster_name     = aws_eks_cluster.prodxcloud-cluster-prod.name
+      cluster_endpoint = aws_eks_cluster.prodxcloud-cluster-prod.endpoint
+      cluster_ca       = aws_eks_cluster.prodxcloud-cluster-prod.certificate_authority[0].data
+    })
   }
 }
