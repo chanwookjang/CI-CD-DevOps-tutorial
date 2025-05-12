@@ -3,12 +3,19 @@ set -ex
 
 #YOU MUST NOT CONTAIN ANY KOREAN TEXT IN THIS FILE IT MAKES UNICODE ENCODING ERRORS!!!
 
-# Password setup (Change MySecurePassword123! as needed)
-# echo 'ec2-user:1692' | chpasswd
-
 # # Enable SSH password authentication
 # sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
 # systemctl restart sshd
+# install jq, awscli (Amazon Linux 2, can omit if already installed)
+yum install -y awscli jq
+
+# Secrets Manager (modify region and secret-id as needed)
+SECRET=$(aws secretsmanager get-secret-value --region ap-northeast-2 --secret-id serial-password --query SecretString --output text)
+PASSWORD=$(echo $SECRET | jq -r '.password')
+
+# ㅊcreate a new user and set password
+useradd eks-admin
+echo "eks-admin:$PASSWORD" | chpasswd
 
 /etc/eks/bootstrap.sh ${cluster_name} \
   --b64-cluster-ca ${cluster_ca} \
