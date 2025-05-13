@@ -197,3 +197,26 @@ resource "kubernetes_config_map" "aws_auth" {
 
   depends_on = [aws_eks_cluster.prodxcloud-cluster-prod]
 }
+
+## we need to get secrets from secret manager to login in the node console 
+resource "aws_iam_policy" "eks_node_secretsmanager_policy" {
+  name        = "eks-node-secretsmanager-serial-password"
+  description = "Allow eks-node-role to get serial-password from Secrets Manager"
+  policy      = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "secretsmanager:GetSecretValue"
+        ]
+        Resource = "arn:aws:secretsmanager:ap-northeast-2:267269535421:secret:serial-password*"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "eks_node_attach_secretsmanager" {
+  role       = aws_iam_role.eks_node_role.name # 또는 eks-node-role의 name 변수 사용
+  policy_arn = aws_iam_policy.eks_node_secretsmanager_policy.arn
+}
