@@ -1,7 +1,6 @@
-version: "3.9"
 services:
   web:
-    image: andy1692/django_project:latest
+    image: andy1692/django_project:web
     container_name: django-web-dev
     env_file: .env
     restart: always

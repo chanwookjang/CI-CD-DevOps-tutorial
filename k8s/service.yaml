@@ -1,11 +1,26 @@
+
+--- # Service for MySQL database
 apiVersion: v1
 kind: Service
 metadata:
-  name: django-web-service
+  name: db-service
 spec:
   selector:
-    app: django-web
-  type: LoadBalancer  # 외부 접속을 위해 LoadBalancer 사용
+    app: db
   ports:
-    - port: 80
-      targetPort: 8585
+  - port: 3306
+    targetPort: 3306
+  type: ClusterIP
+
+--- # Service for web application
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-service
+spec:
+  selector:
+    app: web
+  ports:
+  - port: 8080
+    targetPort: 8585
+  type: ClusterIP

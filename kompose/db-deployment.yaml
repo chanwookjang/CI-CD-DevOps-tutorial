@@ -1,0 +1,108 @@
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   annotations:
+#     kompose.cmd: C:\ProgramData\chocolatey\lib\kubernetes-kompose\tools\kompose.exe convert -f docker-compose.yaml
+#     kompose.version: 1.36.0 (ae2a39403)
+#   labels:
+#     io.kompose.service: db
+#   name: db
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       io.kompose.service: db
+#   strategy:
+#     type: Recreate
+#   template:
+#     metadata:
+#       annotations:
+#         kompose.cmd: C:\ProgramData\chocolatey\lib\kubernetes-kompose\tools\kompose.exe convert -f docker-compose.yaml
+#         kompose.version: 1.36.0 (ae2a39403)
+#       labels:
+#         io.kompose.service: db
+#     spec:
+#       containers:
+#         - env:
+#             - name: POSTGRES_DB
+#               value: db3
+#             - name: POSTGRES_HOST_AUTH_METHOD
+#               value: trust
+#           envFrom:
+#             - configMapRef:
+#                 name: env
+#           image: postgres:15.1-alpine
+#           livenessProbe:
+#             exec:
+#               command: 
+#                 - pg_isready
+#                 - -d
+#                 - postgres
+#                 - -U
+#                 - postgres
+#             failureThreshold: 4
+#             periodSeconds: 3
+#             timeoutSeconds: 3
+#           name: db
+#           ports:
+#             - containerPort: 5432
+#               protocol: TCP
+#           volumeMounts:
+#             - mountPath: /var/lib/postgresql/data
+#               name: postgres-data
+
+#       volumes:
+#         - name: postgres-data
+#           persistentVolumeClaim:
+#             claimName: postgres-data
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db
+  labels:
+    io.kompose.service: db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: db
+  template:
+    metadata:
+      labels:
+        io.kompose.service: db
+    spec:
+      containers:
+        - name: db
+          image: postgres:15.1-alpine
+          resources:
+            requests:
+              cpu: "250m"      # 최소 0.25코어
+              memory: "256Mi"  # 최소 256MiB 메모리
+            limits:
+              cpu: "500m"      # 최대 0.5코어
+              memory: "512Mi"  # 최대 512MiB 메모리
+          env:
+          - name: POSTGRES_DB
+            value: db3
+          - name: POSTGRES_USER
+            value: postgres
+          - name: POSTGRES_PASSWORD
+            value: postgres
+          - name: POSTGRES_HOST_AUTH_METHOD
+            value: trust
+          livenessProbe:
+            exec:
+              command: ["pg_isready", "-d", "db3", "-U", "postgres"]
+            failureThreshold: 4
+            periodSeconds: 3
+            timeoutSeconds: 3
+          ports:
+            - containerPort: 5432
+              protocol: TCP
+          volumeMounts:
+            - name: postgres-data
+              mountPath: /var/lib/postgresql/data
+      volumes:
+        - name: postgres-data
+          persistentVolumeClaim:
+            claimName: postgres-data

@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: C:\ProgramData\chocolatey\lib\kubernetes-kompose\tools\kompose.exe convert -f docker-compose.yaml
+    kompose.version: 1.36.0 (ae2a39403)
+  labels:
+    io.kompose.service: web
+  name: web
+spec:
+  ports:
+    - name: "8585"
+      port: 8585
+      targetPort: 8585
+  selector:
+    io.kompose.service: web

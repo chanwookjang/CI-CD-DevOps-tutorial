@@ -1,30 +1,68 @@
+# This file defines a Kubernetes deployment
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: django-web
+  name: web-app # for web deployment
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: django-web
+      app: web
   template:
     metadata:
       labels:
-        app: django-web
+        app: web
     spec:
       containers:
-      - name: django-web
-        image: 267269535421.dkr.ecr.us-east-1.amazonaws.com/django-app  # 실제 ECR 이미지 주소로 교체
-        envFrom:
-        - secretRef:
-            name: django-env  # 필요시, 환경변수 Secret로 관리
+      - name: web
+        image: andy1692/django_project:web
+        imagePullPolicy: Always
         ports:
         - containerPort: 8585
-        - containerPort: 8000
-        command: ["/bin/sh", "-c"]
-        args:
-          - |
-            python manage.py makemigrations &&
-            python manage.py migrate &&
-            python manage.py collectstatic --noinput &&
-            gunicorn --bind 0.0.0.0:8585 prodxcloud_multi_tenant_django.wsgi:application --workers 4 --threads 4
+        command: ["gunicorn"]
+        args: ["--bind", "0.0.0.0:8585", "--workers", "4", "--threads", "4", "prodxcloud_multi_tenant_django.wsgi:application"]
+        env:
+        - name: DB_HOST
+          value: db-service
+        - name: DB_PORT
+          value: "3306"
+        - name: DJANGO_SETTINGS_MODULE
+          value: "prodxcloud_multi_tenant_django.settings"
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+
+--- # Deployment for MySQL database
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: db
+  template:
+    metadata:
+      labels:
+        app: db
+    spec:
+      containers:
+      - name: db
+        image: mysql:5.7
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: "1234"
+        ports:
+        - containerPort: 3306
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
