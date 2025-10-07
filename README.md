@@ -1,0 +1,1 @@
+This project is footprint of studying CI/CD workflows, leaded by the reading sheet of https://blog.devgenius.io/django-devops-with-kubernetes-from-code-to-cloud-ci-cd-pipeline-for-django-with-istio-on-aws-eks-a1c3a557859e
